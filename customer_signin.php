@@ -82,26 +82,49 @@ if (isset($_POST["sign_in"])) {
                 $_SESSION["LAST_NAME"] = $row["LAST_NAME"];
                 $_SESSION["USER_PROFILE_PICTURE"] = $row["USER_PROFILE_PICTURE"];
 
-                if (isset($_POST["remember"])) {
-                    $token = bin2hex(random_bytes(32));
-                    setcookie("remember_token", $token, time() + (86400 * 30), "/");
-                } else {
-                    if (isset($_COOKIE["remember_token"])) {
-                        setcookie("remember_token", "", time() - 3600, "/");
-                    }
-                }
+                if ($user_role === 'trader') {
+                    $_SESSION["email"] = $email;
+                    $_SESSION["accesstime"] = date("ymdhis");
+                    $_SESSION["role"] = $user_role;
 
-                if ($user_role === 'trader' && $row["VERIFICATION_STATUS"] != 1) {
-                    $account_error = "Please verify your trader account!";
-                } elseif ($user_role === 'customer' && $row["VERIFIED_CUSTOMER"] != 1) {
-                    $account_error = "Please verify your customer account!";
-                } elseif ($user_role === 'trader') {
-                    header("Location: trader_dashboard/trader_dashboard.php");
-                    exit();
+                    if ($row["VERIFICATION_STATUS"] != 1) {
+                        $account_error = "Please verify your trader account!";
+                    } else {
+                        if (isset($_POST["remember"])) {
+                            $token = bin2hex(random_bytes(32));
+                            setcookie("remember_token", $token, time() + (86400 * 30), "/");
+                        } else {
+                            if (isset($_COOKIE["remember_token"])) {
+                                setcookie("remember_token", "", time() - 3600, "/");
+                            }
+                        }
+                        header("Location: trader_dashboard/trader_dashboard.php");
+                        exit();
+                    }
                 } elseif ($user_role === 'customer') {
-                    header("Location: index.php");
-                    exit();
+                    if ($row["VERIFIED_CUSTOMER"] != 1) {
+                        $account_error = "Please verify your customer account!";
+                    } else {
+                        if (isset($_POST["remember"])) {
+                            $token = bin2hex(random_bytes(32));
+                            setcookie("remember_token", $token, time() + (86400 * 30), "/");
+                        } else {
+                            if (isset($_COOKIE["remember_token"])) {
+                                setcookie("remember_token", "", time() - 3600, "/");
+                            }
+                        }
+                        header("Location: index.php");
+                        exit();
+                    }
                 } elseif ($user_role === 'admin') {
+                    if (isset($_POST["remember"])) {
+                        $token = bin2hex(random_bytes(32));
+                        setcookie("remember_token", $token, time() + (86400 * 30), "/");
+                    } else {
+                        if (isset($_COOKIE["remember_token"])) {
+                            setcookie("remember_token", "", time() - 3600, "/");
+                        }
+                    }
                     header("Location: admin_dashboard.php");
                     exit();
                 } else {
@@ -278,8 +301,8 @@ if (isset($_POST["sign_in"])) {
                             <img src="logo.png" alt="ClickFax Traders Logo" class="footer-logo-img">
                         </a>
                     </div>
-                    <p class="title is-4">ClickFax Traders</p>
-                    <p>Email: <a href="mailto:info@clickfaxtraders.com">info@clickfaxtraders.com</a></p>
+                    <p class="title is-4">CleckFax Traders</p>
+                    <p>Email: <a href="mailto:info@clickfaxtraders.com">info@cleckfaxtraders.com</a></p>
                     <p>Phone: <a href="tel:+16466755074">646-675-5074</a></p>
                     <p>3961 Smith Street, New York, United States</p>
                     <div class="buttons mt-4">
